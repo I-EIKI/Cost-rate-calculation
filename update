@@ -1,0 +1,29 @@
+Attribute VB_Name = "Module4"
+Option Explicit
+
+Sub ③更新()
+Dim sum, lRow As Long, k As Long, rate, newrate
+
+lRow = Cells(Rows.Count, "A").End(xlUp).Row
+Cells(7, 9).Activate
+k = 7
+sum = 0
+
+For k = 7 To lRow
+    sum = sum + ActiveCell.Value
+    ActiveCell.Offset(1, 0).Select
+Next
+
+If Cells(2, 5).Value = 0 Or Cells(2, 5).Value = "" Then
+        Cells(llRow + 1, 9) = sum & "円"
+        Cells(llRow + 1, 8) = "合計"
+        Cells(4, 8) = Application.WorksheetFunction.Round(sum, 0) & "円"
+   Else
+        rate = 100 * sum / Cells(2, 8)
+        newrate = Application.WorksheetFunction.Round(rate, 1)
+        Cells(4, 5) = newrate & "%"
+        Cells(llRow + 1, 9) = sum & "円"
+        Cells(llRow + 1, 8) = "合計"
+        Cells(4, 8) = Application.WorksheetFunction.Round(sum, 0) & "円"
+   End If
+End Sub
