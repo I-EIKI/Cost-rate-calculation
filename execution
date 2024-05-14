@@ -1,0 +1,120 @@
+Attribute VB_Name = "Module3"
+Option Explicit
+
+Sub ②完了()
+Dim j As Long, k As Long, llRow As Long, lRow As Long, l, m, lRight As Range, sum, 範囲, cost, rate, newrate As Long
+
+sum = 0
+lRow = Sheets("仕入れ").Cells(Rows.Count, "A").End(xlUp).Row
+
+
+Cells(7, 1).Activate
+        j = 7
+        Do Until Cells(j, 1).Value = ""
+        
+        k = 2
+            Do Until Worksheets("仕入れ").Range("A" & k).Value = ""
+                If ActiveCell.Value = "／" Or ActiveCell.Value = "/" Then
+                    ActiveCell.Offset(1, 0).Select
+            
+                    Exit Do
+                ElseIf Worksheets("仕入れ").Range("A" & k).Value = ActiveCell.Value Then
+                
+                    cost = Worksheets("仕入れ").Range("E" & k).Value * ActiveCell.Offset(0, 7).Value / Worksheets("仕入れ").Range("B" & k).Value
+                    cost = cost / Worksheets("仕入れ").Range("D" & k).Value * 100
+                    cost = Application.WorksheetFunction.Round(cost, 1)
+                    ActiveCell.Offset(0, 8).Value = cost
+                    ActiveCell.Offset(0, 2).Value = Worksheets("仕入れ").Range("B" & k).Value
+                    ActiveCell.Offset(0, 3).Value = Worksheets("仕入れ").Range("C" & k).Value
+                    ActiveCell.Offset(0, 4).Value = Worksheets("仕入れ").Range("D" & k).Value
+                    ActiveCell.Offset(0, 5).Value = Worksheets("仕入れ").Range("E" & k).Value
+                    ActiveCell.Offset(0, 6).Value = Worksheets("仕入れ").Range("E" & k).Value / Worksheets("仕入れ").Range("D" & k).Value
+                    sum = sum + cost
+                    
+                    ActiveCell.Offset(0, 3).Value = Worksheets("仕入れ").Range("C" & k).Value
+                    ActiveCell.Offset(1, 0).Select
+                    
+                    Exit Do
+                ElseIf k = lRow And Not Worksheets("仕入れ").Cells(1, lRow).Value = ActiveCell.Value Then
+                    
+                    'm = InputBox(ActiveCell.Value & "の仕入れ値を入力してください")
+                    'ActiveCell.Offset(0, 5).Value = m
+                    
+                    l = InputBox("歩留率を考慮した" & ActiveCell.Value & "の原価を入力してください" & vbCrLf & vbCrLf & "仕入れ値×使用量/仕入れ容量/歩留率×100")
+                    ActiveCell.Offset(0, 8).Value = l
+                    sum = sum + l
+                    ActiveCell.Offset(1, 0).Select
+                    
+                    Exit Do
+                End If
+                
+                k = k + 1
+            Loop
+            j = j + 1
+        Loop
+        
+    llRow = Cells(Rows.Count, "A").End(xlUp).Row
+    
+   If Cells(2, 5).Value = 0 Or Cells(2, 5).Value = "" Then
+        Cells(llRow + 1, 9) = sum & "円"
+        Cells(llRow + 1, 8) = "合計"
+        Cells(4, 8) = Application.WorksheetFunction.Round(sum, 0) & "円"
+   Else
+        rate = 100 * sum / Cells(2, 8)
+        newrate = Application.WorksheetFunction.Round(rate, 1)
+        Cells(4, 5) = newrate & "%"
+        Cells(llRow + 1, 9) = sum & "円"
+        Cells(llRow + 1, 8) = "合計"
+        Cells(4, 8) = Application.WorksheetFunction.Round(sum, 0) & "円"
+   End If
+   
+   
+   Range(Cells(1, 1), Cells(llRow + 1, 9)).Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+   
+    Set 範囲 = Range(Cells(llRow + 2, 1), Cells(37, 9))
+    ActiveSheet.Shapes.AddTextbox _
+            Orientation:=msoTextOrientationHorizontal, _
+            Left:=範囲.Left, Top:=範囲.Top, _
+            Width:=範囲.Width, Height:=範囲.Height
+    
+    ActiveWindow.DisplayGridlines = False
+    
+End Sub
